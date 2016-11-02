@@ -20,7 +20,7 @@ type TaskController struct {
 //          {"ID": 2, "Title": "Buy bread", "Done": true}
 //        ]}
 func (this *TaskController) ListTasks() {
-	res := struct{ Tasks []*models.Task }{models.DefaultTaskList.All()}
+	res := struct{ Tasks []models.Task }{models.DefaultTaskList.All()}
 	this.Data["json"] = res
 	this.ServeJSON()
 }

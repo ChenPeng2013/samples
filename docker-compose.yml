@@ -6,6 +6,6 @@ services:
           - "8080:8080"
         environment:
           - BEEGO_RUNMODE=prod
-          - TODO_HOST=192.168.0.108
-          - TODO_PORT=27017
+          - SAMPLES_DBHOST=192.168.0.108
+          - SAMPLES_DBPORT=27017
         restart: always

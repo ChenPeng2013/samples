@@ -22,7 +22,6 @@ func NewTask(title string) (*Task, error) {
 
 // TaskManager manages a list of tasks in memory.
 type TaskManager struct {
-	tasks  []*Task
 	lastID int64
 }
 
@@ -36,36 +35,51 @@ func (m *TaskManager) Save(task *Task) error {
 	if task.ID == 0 {
 		m.lastID++
 		task.ID = m.lastID
-		m.tasks = append(m.tasks, cloneTask(task))
+		if err := getDB().Insert(task); err != nil {
+			fmt.Println(err)
+			return err
+		}
 		return nil
 	}
 
-	for i, t := range m.tasks {
+	taskS := []Task{}
+	if err := getDB().FindAll(&taskS); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, t := range taskS {
 		if t.ID == task.ID {
-			m.tasks[i] = cloneTask(task)
+			if err := getDB().UpdateOne(t, task); err != nil {
+				fmt.Println(err)
+				return err
+			}
 			return nil
 		}
 	}
 	return fmt.Errorf("unknown task")
 }
 
-// cloneTask creates and returns a deep copy of the given Task.
-func cloneTask(t *Task) *Task {
-	c := *t
-	return &c
-}
-
 // All returns the list of all the Tasks in the TaskManager.
-func (m *TaskManager) All() []*Task {
-	return m.tasks
+func (m *TaskManager) All() []Task {
+	taskS := []Task{}
+	if err := getDB().FindAll(&taskS); err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return taskS
 }
 
 // Find returns the Task with the given id in the TaskManager and a boolean
 // indicating if the id was found.
 func (m *TaskManager) Find(ID int64) (*Task, bool) {
-	for _, t := range m.tasks {
+	taskS := []Task{}
+	if err := getDB().FindAll(&taskS); err != nil {
+		fmt.Println(err)
+		return nil, false
+	}
+	for _, t := range taskS {
 		if t.ID == ID {
-			return t, true
+			return &t, true
 		}
 	}
 	return nil, false
