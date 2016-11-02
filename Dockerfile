@@ -8,7 +8,6 @@ LABEL Vendor="Ghostcloud" \
     Date="07/01/2016"
 
 COPY bin /
-COPY localtime /etc/localtime
 
 EXPOSE 8080
 
