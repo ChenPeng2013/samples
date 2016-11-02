@@ -11,6 +11,7 @@ fi
 
 mv ms-todo ./bin
 cp -r conf/ ./bin
-
+cp -r views/ ./bin
+cp -r static/ ./bin
 echo "Build ok"
 exit 0
